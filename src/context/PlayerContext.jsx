@@ -60,6 +60,8 @@ export function PlayerProvider({ children }) {
   const [genProgress, setGenProgress] = useState(0);      // generation progress 0–8
   const audioMapRef = useRef(new Map()); // Map<songId, blobURL>
   const audioPromiseMapRef = useRef(new Map()); // Map<songId, Promise<string>>
+  const generationQueueRef = useRef([]);
+  const isProcessingQueueRef = useRef(false);
 
   // Shuffle & Repeat state
   const [shuffleMode, setShuffleMode] = useState(false);          // on/off
@@ -77,27 +79,106 @@ export function PlayerProvider({ children }) {
   // Ref for previous volume (used for mute toggle)
   const prevVolumeRef = useRef(0.8);
 
-  // Generates a song only once and reuses the same Promise for callers.
-  const ensureSongAudio = useCallback(async (song) => {
+  function safelyLoadAudio(audio) {
+    if (!audio || typeof audio.load !== "function") return;
+
+    try {
+      audio.load();
+    } catch {
+      // jsdom does not implement media loading, but browsers do.
+    }
+  }
+
+  const processGenerationQueue = useCallback(async () => {
+    if (isProcessingQueueRef.current) return;
+    isProcessingQueueRef.current = true;
+
+    try {
+      while (generationQueueRef.current.length > 0) {
+        const nextSong = generationQueueRef.current.shift();
+        if (!nextSong) continue;
+
+        const existingUrl = audioMapRef.current.get(nextSong.id);
+        if (existingUrl) continue;
+
+        const existingPromise = audioPromiseMapRef.current.get(nextSong.id);
+        if (existingPromise) {
+          await existingPromise.catch(() => {});
+          continue;
+        }
+
+        const generationPromise = Promise.resolve(
+          generateSongAudio(nextSong.id, nextSong.genre, nextSong.duration)
+        )
+          .then((blobUrl) => {
+            audioMapRef.current.set(nextSong.id, blobUrl);
+            setGenProgress(audioMapRef.current.size);
+            return blobUrl;
+          })
+          .finally(() => {
+            audioPromiseMapRef.current.delete(nextSong.id);
+          });
+
+        audioPromiseMapRef.current.set(nextSong.id, generationPromise);
+        await generationPromise.catch(() => {});
+
+        // Yield between songs so a newly selected track can jump the queue first.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    } finally {
+      isProcessingQueueRef.current = false;
+
+      if (generationQueueRef.current.length > 0) {
+        processGenerationQueue();
+      }
+    }
+  }, []);
+
+  // Generates a song only once and prioritizes the currently requested track.
+  const ensureSongAudio = useCallback(async (song, { priority = false } = {}) => {
     const existingUrl = audioMapRef.current.get(song.id);
     if (existingUrl) return existingUrl;
 
     const existingPromise = audioPromiseMapRef.current.get(song.id);
     if (existingPromise) return existingPromise;
 
-    const generationPromise = generateSongAudio(song.id, song.genre, song.duration)
-      .then((blobUrl) => {
-        audioMapRef.current.set(song.id, blobUrl);
-        setGenProgress(audioMapRef.current.size);
-        return blobUrl;
-      })
-      .finally(() => {
-        audioPromiseMapRef.current.delete(song.id);
-      });
+    const queue = generationQueueRef.current;
+    const queuedIndex = queue.findIndex((queuedSong) => queuedSong.id === song.id);
 
-    audioPromiseMapRef.current.set(song.id, generationPromise);
-    return generationPromise;
-  }, []);
+    if (queuedIndex !== -1) {
+      const [queuedSong] = queue.splice(queuedIndex, 1);
+      if (priority) {
+        queue.unshift(queuedSong);
+      } else {
+        queue.push(queuedSong);
+      }
+    } else if (priority) {
+      queue.unshift(song);
+    } else {
+      queue.push(song);
+    }
+
+    processGenerationQueue();
+    return new Promise((resolve, reject) => {
+      const checkForCompletion = () => {
+        const readyUrl = audioMapRef.current.get(song.id);
+        if (readyUrl) {
+          resolve(readyUrl);
+          return;
+        }
+
+        const pendingPromise = audioPromiseMapRef.current.get(song.id);
+        if (pendingPromise) {
+          pendingPromise.then(resolve).catch(reject);
+          return;
+        }
+
+        setTimeout(checkForCompletion, 0);
+      };
+
+      checkForCompletion();
+    });
+  }, [processGenerationQueue]);
 
   // ── AUDIO GENERATION STRATEGY ──
   // 1) Do not block player startup.
@@ -107,7 +188,7 @@ export function PlayerProvider({ children }) {
     let cancelled = false;
     setAudioReady(true); // Player controls are available immediately.
 
-    ensureSongAudio(currentSong).catch(() => {});
+    ensureSongAudio(currentSong, { priority: true }).catch(() => {});
 
     async function warmRemainingSongs() {
       for (let i = 0; i < songsData.length; i++) {
@@ -138,18 +219,18 @@ export function PlayerProvider({ children }) {
     } else {
       // Fallback to original path if not generated yet
       audio.src = currentSong.src;
-      ensureSongAudio(currentSong)
+      ensureSongAudio(currentSong, { priority: true })
         .then((generatedUrl) => {
           if (currentSong.id !== songIdRef.current) return;
           const currentAudio = audioRef.current;
           if (!currentAudio || currentAudio.src === generatedUrl) return;
           currentAudio.src = generatedUrl;
-          currentAudio.load();
+          safelyLoadAudio(currentAudio);
           if (isPlayingRef.current) currentAudio.play().catch(() => {});
         })
         .catch(() => {});
     }
-    audio.load();
+    safelyLoadAudio(audio);
     // Use the ref instead of the state to avoid stale closure
     if (isPlayingRef.current) audio.play().catch(() => {});
   }, [currentSong, audioReady, ensureSongAudio]);
