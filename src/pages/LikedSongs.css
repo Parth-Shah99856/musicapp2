@@ -1,0 +1,13 @@
+/* LikedSongs.css */
+.liked-page { max-width: 1200px; animation: fadeIn 0.3s ease-out; }
+.liked-header { display: flex; align-items: flex-end; gap: 24px; background: linear-gradient(135deg, #450af5, #c4efd9); border-radius: 8px; padding: 40px 32px 32px; margin-bottom: 32px; animation: fadeIn 0.4s ease-out; }
+.liked-header__icon { font-size: 64px; line-height: 1; flex-shrink: 0; }
+.liked-header__label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+.liked-header__title { font-size: 48px; font-weight: 900; color: #fff; line-height: 1; margin: 6px 0; }
+.liked-header__count { font-size: 14px; color: rgba(255,255,255,.8); }
+
+@media (max-width: 768px) {
+  .liked-header { flex-direction: column; align-items: flex-start; padding: 24px 20px; gap: 12px; }
+  .liked-header__title { font-size: 32px; }
+  .liked-header__icon { font-size: 48px; }
+}

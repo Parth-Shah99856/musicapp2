@@ -1,0 +1,13 @@
+/* Home.css */
+.home-page { max-width: 1200px; animation: fadeIn 0.3s ease-out; }
+.home-header { margin-bottom: 32px; }
+.home-header h1 { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.home-header p { font-size: 14px; color: #b3b3b3; }
+.home-section { margin-bottom: 40px; }
+.section-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+.songs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+
+@media (max-width: 768px) {
+  .home-header h1 { font-size: 24px; }
+  .songs-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+}

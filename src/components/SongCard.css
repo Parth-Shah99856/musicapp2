@@ -1,0 +1,89 @@
+/* ============================================================
+   SongCard.css — Song card component styles
+   ============================================================ */
+
+.song-card {
+  background-color: #181818;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: background-color .2s, transform .2s, box-shadow .2s;
+  position: relative;
+  animation: fadeInScale 0.3s ease-out;
+}
+.song-card:hover {
+  background-color: #282828;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.song-card--active { background-color: #1a2a1a; }
+
+.song-card__cover-wrap { position: relative; margin-bottom: 12px; }
+.song-card__cover {
+  width: 100%; aspect-ratio: 1; object-fit: cover;
+  border-radius: 6px; display: block;
+  transition: filter 0.2s;
+}
+.song-card:hover .song-card__cover { filter: brightness(0.8); }
+
+.song-card__play-btn {
+  position: absolute; bottom: 8px; right: 8px;
+  width: 40px; height: 40px;
+  background-color: #1db954; border: none; border-radius: 50%;
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity .2s, transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .5);
+}
+.song-card:hover .song-card__play-btn, .song-card__play-btn--visible {
+  opacity: 1 !important; transform: translateY(0) !important;
+}
+.song-card__play-btn:hover {
+  background-color: #1ed760;
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.5);
+  transform: scale(1.1) !important;
+}
+.song-card__play-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+.song-card__info { overflow: hidden; }
+.song-card__title {
+  font-size: 14px; font-weight: 600; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
+}
+.song-card__title--green { color: #1db954; }
+.song-card__artist {
+  font-size: 12px; color: #b3b3b3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.song-card__actions { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.song-card__duration { font-size: 12px; color: #b3b3b3; flex: 1; }
+
+.action-btn {
+  background: none; border: none; cursor: pointer; font-size: 16px;
+  padding: 2px; border-radius: 4px; opacity: .6;
+  transition: opacity .15s, transform .15s; line-height: 1;
+}
+.action-btn:hover { opacity: 1; transform: scale(1.15); }
+.action-btn--liked { opacity: 1; }
+.action-btn:focus-visible { outline: 2px solid #1db954; outline-offset: 2px; }
+
+.dropdown-wrap { position: relative; }
+.dropdown-menu {
+  position: absolute; bottom: calc(100% + 8px); right: 0;
+  background-color: #282828; border: 1px solid #404040;
+  border-radius: 6px; padding: 4px; min-width: 160px;
+  z-index: 100; box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+  animation: fadeIn 0.15s ease-out;
+}
+.dropdown-item {
+  display: block; width: 100%; background: none; border: none;
+  color: #fff; font-size: 13px; text-align: left; padding: 8px 12px;
+  border-radius: 4px; cursor: pointer; font-family: inherit;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: background .15s;
+}
+.dropdown-item:hover { background-color: #3a3a3a; }
+.dropdown-item:focus-visible { outline: 2px solid #1db954; outline-offset: -2px; }
+.dropdown-empty { font-size: 12px; color: #b3b3b3; padding: 8px 12px; }

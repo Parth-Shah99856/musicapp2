@@ -1,38 +1,43 @@
-.App {
-  text-align: center;
+/* ============================================================
+   App.css — Main grid layout
+   ============================================================ */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 1fr 90px;
+  grid-template-areas:
+    "sidebar content"
+    "player  player";
+  height: 100vh;
+  gap: 8px;
+  padding: 8px;
+  background-color: #000000;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.main-content {
+  grid-area: content;
+  background-color: #121212;
+  border-radius: 8px;
+  overflow-y: auto;
+  padding: 24px;
+  animation: fadeIn 0.3s ease-out;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* ── Mobile Responsive Layout ── */
+@media (max-width: 768px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 90px;
+    grid-template-areas:
+      "content"
+      "player";
+    padding: 0;
+    gap: 0;
   }
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  .main-content {
+    border-radius: 0;
+    padding: 16px;
   }
 }

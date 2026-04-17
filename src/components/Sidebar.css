@@ -1,0 +1,115 @@
+/* ============================================================
+   Sidebar.css — Left navigation panel styles
+   ============================================================ */
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: #000;
+  border-radius: 8px;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.sidebar-logo { font-size: 22px; font-weight: 700; padding: 8px 12px 16px; }
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+
+.nav-link {
+  display: block; text-decoration: none; color: #b3b3b3;
+  font-size: 14px; font-weight: 500; padding: 10px 12px;
+  border-radius: 6px; transition: color .15s, background .15s;
+}
+.nav-link:hover { color: #fff; background-color: #1a1a1a; }
+.nav-link.active { color: #fff; font-weight: 700; }
+.nav-link:focus-visible { outline: 2px solid #1db954; outline-offset: 2px; }
+
+.sidebar-divider { height: 1px; background-color: #282828; margin: 8px 0; }
+
+.playlists-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 12px; color: #b3b3b3; font-size: 12px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+}
+
+.add-playlist-btn {
+  background: none; border: none; color: #b3b3b3; font-size: 20px;
+  cursor: pointer; padding: 0 4px; transition: color .15s, transform .15s;
+}
+.add-playlist-btn:hover { color: #fff; transform: scale(1.2); }
+
+.new-playlist-input {
+  width: 100%; background-color: #282828; border: 1px solid #535353;
+  border-radius: 4px; color: #fff; font-size: 13px; padding: 8px 10px;
+  margin: 4px 0; outline: none; font-family: inherit;
+}
+.new-playlist-input:focus { border-color: #1db954; }
+
+.playlist-list { display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+
+/* Changed from div to button — semantic HTML for accessibility */
+.playlist-item {
+  display: block; width: 100%; text-align: left;
+  padding: 8px 12px; font-size: 13px; color: #b3b3b3;
+  border-radius: 4px; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color .15s, background .15s;
+  background: none; border: none; font-family: inherit;
+}
+.playlist-item:hover { color: #fff; background-color: #1a1a1a; }
+.playlist-item:focus-visible { outline: 2px solid #1db954; outline-offset: 2px; }
+
+.no-playlists { font-size: 12px; color: #535353; padding: 8px 12px; line-height: 1.5; }
+
+/* ── Hamburger button (mobile only) ── */
+.sidebar-hamburger {
+  display: none;
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 1001;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  font-size: 20px;
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.sidebar-hamburger:hover { background: #282828; }
+
+/* ── Overlay backdrop (mobile only) ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+/* ── Mobile Responsive ── */
+@media (max-width: 768px) {
+  .sidebar-hamburger { display: flex; }
+  .sidebar-overlay { display: block; }
+
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 260px;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    border-radius: 0;
+    padding-top: 60px; /* space for hamburger button */
+  }
+
+  .sidebar--open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+  }
+}

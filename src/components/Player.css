@@ -1,0 +1,157 @@
+/* ============================================================
+   Player.css — Bottom player bar styles
+   ============================================================ */
+
+/* ── Layout ── */
+.player-bar {
+  grid-area: player;
+  background: linear-gradient(180deg, #1a1a1a 0%, #181818 100%);
+  border-top: 1px solid #282828;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  gap: 16px;
+  animation: slideUp 0.4s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Left: Song info ── */
+.player-song-info { display: flex; align-items: center; gap: 12px; min-width: 180px; flex: 1; }
+.player-cover {
+  width: 56px; height: 56px; border-radius: 4px; object-fit: cover; flex-shrink: 0;
+  transition: border-radius 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Spinning album art when playing */
+.player-cover--spinning {
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+  box-shadow: 0 0 12px rgba(29, 185, 84, 0.3);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.player-song-text { overflow: hidden; }
+.player-song-title { font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-song-artist { font-size: 11px; color: #b3b3b3; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.player-like-btn {
+  background: none; border: none; cursor: pointer; font-size: 18px;
+  padding: 4px; opacity: .6; transition: opacity .15s, transform .15s; flex-shrink: 0;
+}
+.player-like-btn:hover, .player-like-btn--active { opacity: 1; }
+.player-like-btn:focus-visible { outline: 2px solid #1db954; outline-offset: 2px; border-radius: 4px; }
+
+/* ── Center: Controls ── */
+.player-center { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 2; max-width: 600px; }
+.player-controls { display: flex; align-items: center; gap: 16px; }
+
+.ctrl-btn {
+  background: none; border: none; cursor: pointer; font-size: 20px;
+  color: #b3b3b3; transition: color .15s, transform .1s; padding: 4px; line-height: 1;
+  position: relative;
+}
+.ctrl-btn:hover { color: #fff; transform: scale(1.08); }
+.ctrl-btn:focus-visible { outline: 2px solid #1db954; outline-offset: 2px; border-radius: 4px; }
+
+.ctrl-btn--play {
+  font-size: 28px; color: #fff;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: #1db954; border-radius: 50%;
+  transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
+}
+.ctrl-btn--play:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 16px rgba(29, 185, 84, 0.5);
+  background: #1ed760;
+}
+
+/* Loading state on play button */
+.ctrl-btn--loading {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+/* Smaller control buttons (shuffle, repeat, volume icon) */
+.ctrl-btn--small { font-size: 16px; opacity: 0.5; }
+.ctrl-btn--small:hover { opacity: 0.8; }
+
+/* Active state for shuffle/repeat — green glow */
+.ctrl-btn--active {
+  opacity: 1 !important;
+  color: #1db954 !important;
+  filter: drop-shadow(0 0 4px rgba(29, 185, 84, 0.4));
+}
+
+/* Repeat-one badge (small "1" indicator) */
+.repeat-one-badge {
+  position: absolute;
+  top: -2px; right: -4px;
+  font-size: 9px; font-weight: 700;
+  color: #1db954;
+  background: #121212;
+  border-radius: 50%;
+  width: 14px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+/* ── Progress bar ── */
+.player-progress { display: flex; align-items: center; gap: 8px; width: 100%; }
+.player-time { font-size: 11px; color: #b3b3b3; min-width: 36px; text-align: center; font-variant-numeric: tabular-nums; }
+
+.progress-slider, .volume-slider {
+  -webkit-appearance: none; appearance: none;
+  height: 4px; border-radius: 2px;
+  background: #535353; cursor: pointer; outline: none;
+  transition: height 0.1s ease;
+}
+.progress-slider:hover, .volume-slider:hover { height: 6px; }
+
+.progress-slider { flex: 1; }
+.volume-slider { width: 90px; }
+
+.progress-slider::-webkit-slider-thumb, .volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; cursor: pointer;
+  transition: transform .1s, background .1s;
+}
+.progress-slider:hover::-webkit-slider-thumb, .volume-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.3);
+  background: #1db954;
+}
+
+.progress-slider:focus-visible, .volume-slider:focus-visible {
+  outline: 2px solid #1db954; outline-offset: 2px; border-radius: 4px;
+}
+
+/* ── Right: Volume ── */
+.player-volume { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end; min-width: 140px; }
+
+/* ── Slide-up animation ── */
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Responsive: Mobile ── */
+@media (max-width: 768px) {
+  .player-song-info { min-width: auto; flex: 0 0 auto; }
+  .player-song-text { display: none; }
+  .player-like-btn { display: none; }
+  .player-volume { display: none; }
+  .player-center { flex: 1; }
+  .ctrl-btn--small { display: none; }
+}

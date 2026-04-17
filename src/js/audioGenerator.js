@@ -362,11 +362,12 @@ function createNoiseBuffer(ctx, durationSec, level, random) {
 //
 //  Returns: Promise<string> — a blob:// URL for the audio
 // ---------------------------------------------------------------
-export async function generateSongAudio(songId, genre, duration) {
+export async function generateSongAudio(songId, genre, duration, options = {}) {
   const config = GENRE_CONFIG[genre] || GENRE_CONFIG.Pop;
   const random = createSeededRandom(songId * 7919); // prime seed for variety
-  const sampleRate = 32000;
-  const totalSamples = sampleRate * duration;
+  const sampleRate = options.sampleRate || 32000;
+  const renderDuration = Math.min(duration, options.renderDuration || duration);
+  const totalSamples = sampleRate * renderDuration;
 
   // Create offline context — renders audio without playing it
   const ctx = new OfflineAudioContext(2, totalSamples, sampleRate);
@@ -375,21 +376,25 @@ export async function generateSongAudio(songId, genre, duration) {
   const masterGain = ctx.createGain();
   masterGain.gain.setValueAtTime(0.7, 0);
 
-  // Fade in at start (2 seconds)
-  masterGain.gain.setValueAtTime(0, 0);
-  masterGain.gain.linearRampToValueAtTime(0.7, 2);
+  const fadeInDuration = Math.min(2, renderDuration * 0.35);
+  const fadeOutDuration = Math.min(3, renderDuration * 0.35);
+  const fadeOutStart = Math.max(fadeInDuration, renderDuration - fadeOutDuration);
 
-  // Fade out at end (3 seconds)
-  masterGain.gain.setValueAtTime(0.7, duration - 3);
-  masterGain.gain.linearRampToValueAtTime(0, duration);
+  // Fade in at start
+  masterGain.gain.setValueAtTime(0, 0);
+  masterGain.gain.linearRampToValueAtTime(0.7, fadeInDuration);
+
+  // Fade out at end
+  masterGain.gain.setValueAtTime(0.7, fadeOutStart);
+  masterGain.gain.linearRampToValueAtTime(0, renderDuration);
 
   masterGain.connect(ctx.destination);
 
   // Generate all musical elements (ARRAYS of note events)
-  const melody = generateMelody(config, duration, random);
-  const bass = generateBassLine(config, duration, random);
-  const chords = generateChordProgression(config, duration);
-  const drums = generateDrumPattern(config, duration, random);
+  const melody = generateMelody(config, renderDuration, random);
+  const bass = generateBassLine(config, renderDuration, random);
+  const chords = generateChordProgression(config, renderDuration);
+  const drums = generateDrumPattern(config, renderDuration, random);
   const drumBuffers = {
     snare: createNoiseBuffer(ctx, 0.1, 0.3, random),
     hihat: createNoiseBuffer(ctx, 0.05, 0.15, random),

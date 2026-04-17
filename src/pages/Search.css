@@ -1,0 +1,23 @@
+/* Search.css */
+.search-page { max-width: 1200px; animation: fadeIn 0.3s ease-out; }
+.page-title { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 24px; }
+.search-bar-wrap { position: relative; display: flex; align-items: center; margin-bottom: 32px; max-width: 500px; }
+.search-icon { position: absolute; left: 14px; font-size: 18px; pointer-events: none; }
+.search-input { width: 100%; background-color: #fff; color: #000; border: none; border-radius: 24px; padding: 12px 40px 12px 44px; font-size: 15px; font-family: inherit; outline: none; transition: box-shadow 0.2s; }
+.search-input:focus { box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3); }
+.search-input::placeholder { color: #727272; }
+.search-clear { position: absolute; right: 14px; background: none; border: none; color: #727272; font-size: 16px; cursor: pointer; padding: 4px; transition: color 0.15s; }
+.search-clear:hover { color: #333; }
+.section-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+.songs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.no-results-hint { color: #b3b3b3; font-size: 14px; margin-top: 8px; }
+.genre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+.genre-card { border-radius: 8px; padding: 24px 16px; font-size: 18px; font-weight: 700; color: #fff; cursor: pointer; transition: transform .15s, filter .15s, box-shadow .2s; min-height: 100px; display: flex; align-items: flex-end; user-select: none; animation: fadeInScale 0.3s ease-out; }
+.genre-card:hover { transform: scale(1.03); filter: brightness(1.15); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+.genre-card:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+@media (max-width: 768px) {
+  .page-title { font-size: 24px; }
+  .search-bar-wrap { max-width: 100%; }
+  .genre-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}

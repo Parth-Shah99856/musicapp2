@@ -1,0 +1,19 @@
+/* NotFound.css */
+.notfound-page {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; text-align: center; padding: 40px;
+  animation: fadeIn 0.4s ease-out;
+}
+.notfound-code {
+  font-size: 100px; font-weight: 700; color: #1db954;
+  line-height: 1; margin-bottom: 8px;
+  text-shadow: 0 0 40px rgba(29, 185, 84, 0.3);
+}
+.notfound-title { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.notfound-text { font-size: 14px; color: #b3b3b3; margin-bottom: 32px; }
+.notfound-btn {
+  background: #1db954; color: #fff; border: none; padding: 12px 32px;
+  border-radius: 24px; font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: inherit; transition: background 0.2s, transform 0.15s;
+}
+.notfound-btn:hover { background: #1ed760; transform: scale(1.05); }
